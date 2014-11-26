@@ -29,17 +29,21 @@ try:
 				requests[connection.fileno()]=b''
 				responses[connection.fileno()]=rqsponse
 			elif event & select.EPOLLIN:
-				requests[fileno]+=xonnections[fileno].recv(1024)
+				requests[fileno]+=connections[fileno].recv(1024)
 				if EOL1 in requests[fileno] or EOL2 in requests[fileno]:
 					epoll.modify(fileno,select.EPOLLOUT)
 					print('-'*40+'\n'+requests[filno].decode()[:-2])
 			elif event & select.EPOLLOUT:
 				byteswritten=connections[fileno].send(responses[fileno])
-				response[fileno]=responses[fileno][byteswritten:]
+				responses[fileno]=responses[fileno][byteswritten:]
 				if len(responses[fileno])==0
 					epoll.modify(fileno,0)
 					connections[fileno].shutdown(socket.SHUT_RDWR)
-			
+			elif event & select.EPOLLHUP:
+				epoll.unregister(fileno)
+				connections[fileno].close()
+				del connections[fileno]
+
 finally:
 	epoll.unregister().close()
 	epoll.close()
