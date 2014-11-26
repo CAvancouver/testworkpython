@@ -30,18 +30,18 @@ try:
 				responses[connection.fileno()]=rqsponse
 			elif event & select.EPOLLIN:
 				requests[fileno]+=xonnections[fileno].recv(1024)
+				if EOL1 in requests[fileno] or EOL2 in requests[fileno]:
+					epoll.modify(fileno,select.EPOLLOUT)
+					print('-'*40+'\n'+requests[filno].decode()[:-2])
+			elif event & select.EPOLLOUT:
+				byteswritten=connections[fileno].send(responses[fileno])
+				response[fileno]=responses[fileno][byteswritten:]
+				if len(responses[fileno])==0
+					epoll.modify(fileno,0)
+					connections[fileno].shutdown(socket.SHUT_RDWR)
+			
 finally:
 	epoll.unregister().close()
 	epoll.close()
 	serversocket.close()
-
-
-connectiontoclient,address=serversocket.accept()
-request=b''
-while EOL1 not in request and EOL2 not in request:
-	request +=connectiontoclient.recv(1024)
-print(request.decode())
-connectiontoclient.send(response)
-connectiontoclient.close()
-
 
